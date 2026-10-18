@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muhammad Zahid | Developer & Editorial Designer</title>
+    <meta name="description" content="Portfolio of Muhammad Zahid (Ilm o Roshni). Software developer and editorial designer specializing in cloud utilities and Nastaleeq typography." />
+    <meta property="og:title" content="Muhammad Zahid | Developer & Editorial Designer" />
+    <meta property="og:description" content="Portfolio of Muhammad Zahid (Ilm o Roshni). Software developer and editorial designer specializing in cloud utilities and Nastaleeq typography." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400..700&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+        --font-outfit: 'Outfit', sans-serif;
+        --font-urdu: 'Noto Nastaliq Urdu', serif;
+      }
+      body {
+        background-color: #000000;
+        color: #ededed;
+        margin: 0;
+        overflow-x: hidden;
+      }
+      [dir="rtl"] {
+        font-family: var(--font-urdu), var(--font-outfit);
+        line-height: 2.2;
+      }
+      [dir="ltr"] {
+        font-family: var(--font-outfit), sans-serif;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
