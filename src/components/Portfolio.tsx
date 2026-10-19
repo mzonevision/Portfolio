@@ -6,7 +6,7 @@ import { SiFacebook, SiInstagram, SiPinterest, SiBehance } from 'react-icons/si'
 
 const socialLinks = [
   { icon: Linkedin, href: 'https://www.linkedin.com/in/muhammad-zahid-ayyub/', label: 'LinkedIn' },
-  { icon: Github, href: 'https://github.com/m92zahid', label: 'GitHub' },
+  { icon: Github, href: 'https://github.com/mzonevision', label: 'GitHub' },
   { icon: SiBehance, href: 'https://www.behance.net/mzonevision', label: 'Behance' },
   { icon: SiFacebook, href: 'https://www.facebook.com/m92zahid', label: 'Facebook' },
   { icon: SiInstagram, href: 'https://www.instagram.com/m92zahid/', label: 'Instagram' },
