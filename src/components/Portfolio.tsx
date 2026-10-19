@@ -4,6 +4,23 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Github, Mail, ExternalLink, Cpu, BookOpen, Layers, Monitor, ChevronRight, Linkedin } from 'lucide-react';
 import { SiFacebook, SiInstagram, SiPinterest, SiBehance } from 'react-icons/si';
 
+const socialLinks = [
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/muhammad-zahid-ayyub/', label: 'LinkedIn' },
+  { icon: Github, href: 'https://github.com/m92zahid', label: 'GitHub' },
+  { icon: SiBehance, href: 'https://www.behance.net/mzonevision', label: 'Behance' },
+  { icon: SiFacebook, href: 'https://www.facebook.com/m92zahid', label: 'Facebook' },
+  { icon: SiInstagram, href: 'https://www.instagram.com/m92zahid/', label: 'Instagram' },
+  { icon: SiPinterest, href: 'https://www.pinterest.com/m92zahid/', label: 'Pinterest' },
+];
+
+const bookSamples = [
+  { src: '/images/tazkia-book-4/cover.webp', caption: 'sampleCover' },
+  { src: '/images/tazkia-book-4/ornamental-chart.webp', caption: 'sampleOrnamentalChart' },
+  { src: '/images/tazkia-book-4/color-chart.webp', caption: 'sampleColorChart' },
+  { src: '/images/tazkia-book-4/certificate.webp', caption: 'sampleCertificate' },
+  { src: '/images/tazkia-book-4/nastaleeq-layout.webp', caption: 'sampleNastaleeq' },
+];
+
 // --- Components ---
 
 const Navbar = () => {
@@ -27,7 +44,7 @@ const Navbar = () => {
         </a>
 
         {/* Zone 2: Nav Links */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav aria-label={t('navigation')} className="hidden md:flex items-center gap-8">
           {links.map((link) => (
             <a
               key={link.href}
@@ -42,8 +59,10 @@ const Navbar = () => {
         {/* Zone 3: Controls */}
         <div className="flex items-center gap-4 shrink-0">
           <button
+            type="button"
             onClick={() => setLanguage(language === 'en' ? 'ur' : 'en')}
-            className="text-xs font-bold tracking-widest uppercase px-2 py-1 border border-[#262626] rounded hover:bg-[#161616] transition-colors"
+            aria-label={language === 'en' ? 'اردو میں دیکھیں' : 'View in English'}
+            className="text-xs font-bold tracking-widest uppercase px-2 py-1 border border-[#262626] rounded hover:bg-[#161616] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 transition-colors"
           >
             {language === 'en' ? 'اردو' : 'EN'}
           </button>
@@ -53,7 +72,14 @@ const Navbar = () => {
           >
             {t('getInTouch')}
           </a>
-          <button className="md:hidden text-white" onClick={() => setIsOpen(!isOpen)}>
+          <button
+            type="button"
+            className="md:hidden text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? t('closeMenu') : t('openMenu')}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
+          >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -62,10 +88,12 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <motion.nav
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            id="mobile-navigation"
+            aria-label={t('navigation')}
             className="md:hidden bg-[#0a0a0a] border-b border-[#262626] px-6 py-8 flex flex-col gap-6"
           >
             {links.map((link) => (
@@ -85,7 +113,7 @@ const Navbar = () => {
             >
               {t('getInTouch')}
             </a>
-          </motion.div>
+          </motion.nav>
         )}
       </AnimatePresence>
     </header>
@@ -160,7 +188,7 @@ const Hero = () => {
                  <div className="w-24 h-24 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6">
                     <Monitor size={48} className="text-blue-500" />
                  </div>
-                 <div className="text-white/20 font-bold text-4xl uppercase tracking-[0.2em]">IZ</div>
+                 <div className="text-white/20 font-bold text-4xl uppercase tracking-[0.2em]">MZ</div>
               </div>
            </div>
         </motion.div>
@@ -191,14 +219,14 @@ const Hero = () => {
 const About = () => {
   const { t } = useLanguage();
   return (
-    <section id="about" className="py-24 px-6 bg-[#050505]">
+    <section id="about" className="scroll-mt-20 py-24 px-6 bg-[#050505]">
       <div className="max-w-4xl mx-auto">
         <div className="mb-12">
           <h2 className="text-sm font-bold text-blue-500 uppercase tracking-[0.3em] mb-4">
             01. {t('about')}
           </h2>
           <p className="text-3xl md:text-4xl font-semibold text-white leading-tight mb-8">
-            The intersection of technical precision and artistic heritage.
+            {t('aboutHeadline')}
           </p>
           <div className="h-px w-20 bg-blue-500 mb-12" />
         </div>
@@ -213,41 +241,42 @@ const About = () => {
 
 const Projects = () => {
   const { t, language } = useLanguage();
+  const [selectedProject, setSelectedProject] = React.useState<number | null>(null);
 
   const projects = [
     {
       title: 'MZ Drive Utilities Hub',
       url: 'https://tools.ilmoroshni.com',
-      tagline: 'Unified Google Drive cloud utility portal featuring GIS OAuth 2.0.',
-      features: ['Multipart file uploader (100MB)', 'FFmpeg cloud video-to-MP3 (D-VAC)'],
+      tagline: t('project1Tagline'),
+      features: [t('project1Feature1'), t('project1Feature2')],
       tech: ['Python', 'FastAPI', 'Docker', 'Google Drive API'],
       icon: Cpu,
     },
     {
       title: 'Nopist',
-      tagline: 'Cross-platform real-time synchronized clipboard manager.',
-      features: ['Firestore synchronization', 'Folder grouping', 'End-to-end state management'],
+      tagline: t('project2Tagline'),
+      features: [t('project2Feature1'), t('project2Feature2'), t('project2Feature3')],
       tech: ['Flutter', 'Dart', 'Firebase'],
       icon: Monitor,
     },
     {
       title: 'Auto Urdu PDF OCR',
-      tagline: 'High-volume scanned document automation pipeline.',
-      features: ['High-DPI splitting', 'Google Drive REST OCR', 'Ordered book merging'],
+      tagline: t('project3Tagline'),
+      features: [t('project3Feature1'), t('project3Feature2'), t('project3Feature3')],
       tech: ['Python', 'Poppler', 'Google Docs API'],
       icon: Layers,
     },
     {
-      title: 'Ilm o Roshni Editorial',
-      tagline: 'Fine-art typography and luxury book covers.',
-      features: ['Urdu Nastaleeq grid layouts', 'Multi-lingual typography', 'Print-ready prepress'],
+      title: language === 'ur' ? 'کتاب التزکیہ — جلد 4' : 'Tazkia Book 4',
+      tagline: t('project4Tagline'),
+      features: [t('project4Feature1'), t('project4Feature2'), t('project4Feature3')],
       tech: ['InDesign', 'Illustrator', 'Photoshop'],
       icon: BookOpen,
     },
   ];
 
   return (
-    <section id="projects" className="py-24 px-6">
+    <section id="projects" className="scroll-mt-20 py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <h2 className="text-sm font-bold text-blue-500 uppercase tracking-[0.3em] mb-4">
@@ -266,15 +295,30 @@ const Projects = () => {
               transition={{ delay: i * 0.1 }}
               className="group relative bg-[#0a0a0a] border border-[#262626] rounded-2xl overflow-hidden hover:border-[#333] transition-all flex flex-col h-full"
             >
-              <div className="aspect-video relative overflow-hidden bg-[#161616]">
-                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent" />
-                 <div className="absolute inset-0 flex items-center justify-center">
-                    <project.icon size={48} className="text-[#333] group-hover:text-blue-500/50 transition-colors" />
-                 </div>
-              </div>
+              {i === 3 ? (
+                <div role="img" aria-label={t('bookSamplesIntro')} className="aspect-video relative grid grid-cols-2 gap-2 overflow-hidden bg-[#080808] p-3">
+                  {bookSamples.slice(0, 2).map((sample) => (
+                    <div key={sample.src} className="flex min-h-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-black">
+                      <img src={sample.src} alt="" loading="lazy" className="h-full w-full object-contain" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div aria-hidden="true" className="aspect-video relative overflow-hidden bg-gradient-to-br from-[#111827] via-[#0a0a0a] to-[#111]">
+                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_75%_20%,_var(--tw-gradient-stops))] from-blue-500/50 via-transparent to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-between p-8">
+                    <div className="max-w-[75%]">
+                      <span className="block text-[10px] font-semibold tracking-[0.25em] text-blue-300/70 mb-3">{`0${i + 1} / 04`}</span>
+                      <span className="block text-xl md:text-2xl font-semibold text-white/80">{project.title}</span>
+                      <span className="block text-xs text-white/40 mt-2">{project.tech.slice(0, 2).join(' · ')}</span>
+                    </div>
+                    <project.icon size={42} className="text-blue-300/50 shrink-0" />
+                  </div>
+                </div>
+              )}
               
               <div className="p-8 flex flex-col flex-grow">
-                <div className="flex items-center gap-3 text-xs text-[#555] mb-4">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#9ca3af] mb-4">
                   {project.tech.map((tag, j) => (
                     <React.Fragment key={j}>
                       <span>{tag}</span>
@@ -305,17 +349,41 @@ const Projects = () => {
                     >
                       {t('liveDemo')} <ExternalLink size={14} />
                     </a>
-                  ) : (
-                    <button className="text-xs font-bold text-[#555] uppercase tracking-widest cursor-default">
-                       {t('projectDetails')}
-                    </button>
-                  )}
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject(i)}
+                    className="inline-flex items-center gap-2 text-xs font-bold text-white uppercase tracking-widest hover:text-blue-400 transition-colors"
+                    aria-haspopup="dialog"
+                  >
+                    {t('projectDetails')} <ChevronRight size={14} />
+                  </button>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
+      <Modal
+        isOpen={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+        title={selectedProject === null ? '' : projects[selectedProject].title}
+        content={selectedProject === null ? '' : `${t('projectOverview')}\n${projects[selectedProject].tagline}\n\n${t('projectRole')}\n${projects[selectedProject].features.map((feature) => `• ${feature}`).join('\n')}\n\n${projects[selectedProject].tech.join(' · ')}`}
+      >
+        {selectedProject === 3 && (
+          <div>
+            <p className="mb-5 text-sm text-[#9ca3af]">{t('bookSamplesIntro')}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {bookSamples.map((sample) => (
+                <a key={sample.src} href={sample.src} target="_blank" rel="noopener noreferrer" aria-label={`${t(sample.caption)} — ${t('openFullSize')}`} className="group overflow-hidden rounded-xl border border-[#262626] bg-[#050505] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400">
+                  <img src={sample.src} alt={t(sample.caption)} loading="lazy" className="aspect-[3/4] w-full object-contain bg-black transition-transform group-hover:scale-[1.02]" />
+                  <span className="block p-3 text-sm text-[#ededed]">{t(sample.caption)}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </Modal>
     </section>
   );
 };
@@ -339,7 +407,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-24 px-6 bg-[#050505]">
+    <section id="skills" className="scroll-mt-20 py-24 px-6 bg-[#050505]">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <h2 className="text-sm font-bold text-blue-500 uppercase tracking-[0.3em] mb-4">
@@ -379,7 +447,7 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-24 px-6">
+    <section id="services" className="scroll-mt-20 py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <h2 className="text-sm font-bold text-blue-500 uppercase tracking-[0.3em] mb-4">
@@ -409,7 +477,7 @@ const Services = () => {
 const Contact = () => {
   const { t } = useLanguage();
   return (
-    <section id="contact" className="py-24 px-6 bg-[#050505]">
+    <section id="contact" className="scroll-mt-20 py-24 px-6 bg-[#050505]">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
         <div>
           <h2 className="text-sm font-bold text-blue-500 uppercase tracking-[0.3em] mb-4">
@@ -417,7 +485,7 @@ const Contact = () => {
           </h2>
           <h3 className="text-4xl md:text-5xl font-bold text-white mb-8">{t('getInTouch')}</h3>
           <p className="text-lg text-[#9ca3af] mb-12">
-            Available for high-impact software development and editorial design projects worldwide.
+            {t('contactPitch')}
           </p>
           
           <div className="flex flex-col gap-4">
@@ -429,16 +497,9 @@ const Contact = () => {
             </a>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-              {[
-                { icon: Linkedin, href: 'https://www.linkedin.com/in/muhammad-zahid-ayyub/', label: 'LinkedIn' },
-                { icon: Github, href: 'https://github.com/m92zahid', label: 'GitHub' },
-                { icon: SiBehance, href: 'https://www.behance.net/mzonevision', label: 'Behance' },
-                { icon: SiFacebook, href: 'https://www.facebook.com/m92zahid', label: 'Facebook' },
-                { icon: SiInstagram, href: 'https://www.instagram.com/m92zahid/', label: 'Instagram' },
-                { icon: SiPinterest, href: 'https://www.pinterest.com/m92zahid/', label: 'Pinterest' },
-              ].map((social, i) => (
+              {socialLinks.map((social) => (
                 <a 
-                  key={i} 
+                  key={social.label}
                   href={social.href} 
                   target="_blank" 
                   rel="noopener noreferrer" 
@@ -452,25 +513,38 @@ const Contact = () => {
           </div>
         </div>
 
-        <form 
-          action="mailto:mzonevision@gmail.com" 
-          method="post" 
+        <form
+          action="mailto:mzonevision@gmail.com"
+          method="post"
           encType="text/plain"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const body = [
+              `${t('formName')}: ${formData.get('name')}`,
+              `${t('formEmail')}: ${formData.get('email')}`,
+              '',
+              String(formData.get('message') ?? ''),
+            ].join('\n');
+            window.location.href = `mailto:mzonevision@gmail.com?subject=${encodeURIComponent(t('mailtoSubject'))}&body=${encodeURIComponent(body)}`;
+          }}
+          aria-label={t('contactForm')}
           className="bg-[#0a0a0a] border border-[#262626] p-8 rounded-2xl flex flex-col gap-6"
         >
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-[#555]">{t('formName')}</label>
-            <input type="text" name="name" required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none transition-colors" />
+            <label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-widest text-[#9ca3af]">{t('formName')}</label>
+            <input id="contact-name" type="text" name="name" autoComplete="name" maxLength={100} required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-400 outline-none transition-colors" />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-[#555]">{t('formEmail')}</label>
-            <input type="email" name="email" required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none transition-colors" />
+            <label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-widest text-[#9ca3af]">{t('formEmail')}</label>
+            <input id="contact-email" type="email" name="email" autoComplete="email" maxLength={254} required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-400 outline-none transition-colors" />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-[#555]">{t('formMessage')}</label>
-            <textarea name="message" rows={4} required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none transition-colors resize-none" />
+            <label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-widest text-[#9ca3af]">{t('formMessage')}</label>
+            <textarea id="contact-message" name="message" rows={4} maxLength={2000} required className="bg-[#161616] border border-[#262626] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-400 outline-none transition-colors resize-y" />
           </div>
-          <button type="submit" className="w-full py-4 bg-white text-black font-bold rounded-lg hover:bg-[#ededed] transition-colors">
+          <p className="text-xs text-[#9ca3af]">{t('mailtoNotice')}</p>
+          <button type="submit" className="w-full py-4 bg-white text-black font-bold rounded-lg hover:bg-[#ededed] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 transition-colors">
             {t('formSubmit')}
           </button>
         </form>
@@ -479,7 +553,43 @@ const Contact = () => {
   );
 };
 
-const Modal = ({ isOpen, onClose, title, content }: { isOpen: boolean, onClose: () => void, title: string, content: string }) => {
+const Modal = ({ isOpen, onClose, title, content, children }: { isOpen: boolean, onClose: () => void, title: string, content: string, children?: React.ReactNode }) => {
+  const { t } = useLanguage();
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key === 'Tab') {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable?.length) {
+          event.preventDefault();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -496,16 +606,21 @@ const Modal = ({ isOpen, onClose, title, content }: { isOpen: boolean, onClose: 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="relative w-full max-w-2xl bg-[#0a0a0a] border border-[#262626] rounded-2xl p-8 max-h-[80vh] overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dialog-title"
+            ref={dialogRef}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white">{title}</h3>
-              <button onClick={onClose} className="text-[#555] hover:text-white">
+              <h3 id="dialog-title" className="text-xl font-bold text-white">{title}</h3>
+              <button ref={closeButtonRef} type="button" onClick={onClose} aria-label={t('closeDialog')} className="text-[#9ca3af] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400">
                 <X size={24} />
               </button>
             </div>
             <div className="text-[#9ca3af] text-sm leading-relaxed whitespace-pre-wrap">
               {content}
             </div>
+            {children}
           </motion.div>
         </div>
       )}
@@ -517,24 +632,22 @@ const Footer = () => {
   const { t } = useLanguage();
   const [modalType, setModalType] = React.useState<'privacy' | 'terms' | null>(null);
 
-  const privacyContent = `Privacy Policy for Muhammad Zahid / Ilm o Roshni\n\nThis Privacy Policy describes how your personal information is collected, used, and shared when you visit ilmoroshni.com.\n\nPERSONAL INFORMATION WE COLLECT\nWe only collect the information you provide via the contact form (Name, Email, Message) to respond to your inquiries. We do not use cookies for tracking.\n\nHOW DO WE USE YOUR PERSONAL INFORMATION?\nWe use the information to communicate with you and provide services you request.\n\nSHARING YOUR PERSONAL INFORMATION\nWe do not share your personal information with third parties.`;
-
-  const termsContent = `Terms of Service for Muhammad Zahid / Ilm o Roshni\n\nBy accessing ilmoroshni.com, you agree to these terms.\n\nINTELLECTUAL PROPERTY\nThe content on this website, including projects, designs, and code, is the property of Muhammad Zahid unless otherwise stated.\n\nLIMITATION OF LIABILITY\nMuhammad Zahid is not liable for any damages arising from the use of this website.`;
-
   return (
     <footer className="py-12 px-6 border-t border-[#262626]">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="flex flex-col gap-4 items-center md:items-start">
-          <p className="text-sm text-[#555]">{t('copyright')}</p>
+          <p className="text-sm text-[#9ca3af]">{t('copyright')}</p>
           <div className="flex items-center gap-4">
-             {[Linkedin, Github, SiBehance, SiFacebook, SiInstagram].map((Icon, i) => (
-               <Icon key={i} size={14} className="text-[#333] hover:text-[#555] transition-colors" />
+             {socialLinks.slice(0, 5).map(({ icon: Icon, href, label }) => (
+               <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="text-[#9ca3af] hover:text-white transition-colors">
+                 <Icon size={16} aria-hidden="true" />
+               </a>
              ))}
           </div>
         </div>
-        <div className="flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-[#555]">
-          <button onClick={() => setModalType('privacy')} className="hover:text-white transition-colors cursor-pointer">{t('privacy')}</button>
-          <button onClick={() => setModalType('terms')} className="hover:text-white transition-colors cursor-pointer">{t('terms')}</button>
+        <div className="flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-[#9ca3af]">
+          <button type="button" onClick={() => setModalType('privacy')} className="hover:text-white transition-colors cursor-pointer">{t('privacy')}</button>
+          <button type="button" onClick={() => setModalType('terms')} className="hover:text-white transition-colors cursor-pointer">{t('terms')}</button>
         </div>
       </div>
 
@@ -542,7 +655,7 @@ const Footer = () => {
         isOpen={modalType !== null} 
         onClose={() => setModalType(null)} 
         title={modalType === 'privacy' ? t('privacy') : t('terms')}
-        content={modalType === 'privacy' ? privacyContent : termsContent}
+        content={modalType === 'privacy' ? t('privacyContent') : t('termsContent')}
       />
     </footer>
   );
